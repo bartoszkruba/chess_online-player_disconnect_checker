@@ -1,4 +1,4 @@
-package com.company.chess_online.disconnect_checker.data
+package com.company.chess_online.disconnect_checker.data.model
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
