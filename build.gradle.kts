@@ -1,11 +1,18 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id ("org.sonarqube") version "2.7.1"
     id("org.springframework.boot") version "2.1.9.RELEASE"
     id("io.spring.dependency-management") version "1.0.8.RELEASE"
     kotlin("jvm") version "1.2.71"
     kotlin("plugin.spring") version "1.2.71"
     kotlin("plugin.jpa") version "1.2.71"
+}
+
+sonarqube {
+    properties {
+        property ("sonar.projectKey", "bartoszkruba_chess_online-player_disconnect_checker")
+    }
 }
 
 group = "com.company.chess_online"

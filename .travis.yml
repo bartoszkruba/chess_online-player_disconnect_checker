@@ -7,9 +7,15 @@ services:
   - docker
   - mysql
 
+addons:
+  sonarcloud:
+    organization: "bartoszkruba-github"
+    token:
+      secure: "eBPWFh5k6bl+SQbh8zOPpHyPwtZfPrV2Zr9YxYPeUAB0FUyWzaKJlZ6YMIB4c3eCQ3IAYU1KpVC7hJC24jQXldHzrx1ZiOk3EgDMt11IMfGipd8ndpLilUwQ/MlSpmyI5HedwP5Ck2OJK3999b1Bd/A44k4Ame2nIQqTo/STPhyWzT7qjA7TlTUAmTK51V9uMjiI8RJFJr63gsmxAcMot/vkhMH2CmmZ3vvs2wgZ5auHnItD+1SRhZwd4RZO1DXZiKAcXmXwtKecZdIReR00Cw7IKQIaKNWh/VnUxkpbaC8XnnyW7escXDHBn5P2va0aYO+DrcPHIFF//lflBovKEfnQW6VuU5G2FZ+oYczBTuiGEq0z3qUbrlpgzjp7GTnLaYzd/HDy2IWPpjHBzzjxnOsZiM0kM/cNM0R5ddFpXhKMO2Ugb8mQs8fb7qczugtC7pEsBnrGuGlVOmlATjQcb/nwgyELHO1gx7sdnbB5aNC1KxxZT7oSL9n0be2Vme67x3XpK74JfpFCqD8QL1gXyralzAlJsMdXMM8qxLcpHpxawCNHVjXYFR7k9JmXrZOvsmfXLJo26JVtbmn+i89E4D6ah3D4JEUgSxZMvdZDHoh6JvSXe0BXa58eoqGQJunM1PJDlRrwD+uxDqPpuprszOnJ3nTs0ThRQQ398z8eC10="
+
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS chess_online_dev;'
   - docker run -d -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest -p 4369:4369 -p 5671:5671 -p 5672:5672 -p 15672:15672 -p 61613:61613  itzg/rabbitmq-stomp
 
 script:
-  - ./gradlew test build
+  - ./gradlew sonarqube
