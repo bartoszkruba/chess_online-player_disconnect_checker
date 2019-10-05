@@ -4,4 +4,4 @@
 
 
 
-Microservice for chess_online backend 
+Microservice for chess_online backend. Continuously scans game database looking for un-updated player pings and notifies other services through rabbitmq queue if player stops to update ping. Build with Spring And Kotlin
