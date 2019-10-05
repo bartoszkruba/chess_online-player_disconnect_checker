@@ -2,6 +2,7 @@ package com.company.chess_online.disconnect_checker.data
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
+import org.springframework.scheduling.annotation.EnableScheduling
 import java.time.LocalDateTime
 import javax.persistence.*
 
