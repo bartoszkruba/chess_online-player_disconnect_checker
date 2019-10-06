@@ -53,8 +53,10 @@ internal class PingCheckScheduleTest {
         game.whitePlayer = whitePlayer
         game.whitePing = LocalDateTime.now().minusMinutes(1)
 
-        val gameList = arrayOf(game)
-        given(gameRepository.findByStatusNot(GameStatus.FINISHED)).willReturn(gameList.iterator() as Iterable<Game>)
+        val gameList = ArrayList<Game>()
+        gameList.add(game)
+
+        given(gameRepository.findByStatusNot(GameStatus.FINISHED)).willReturn(gameList)
 
         pingCheckSchedule.checkPings()
 
