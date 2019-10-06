@@ -24,19 +24,19 @@ data class Game(
         val version: Long,
 
         @Enumerated(EnumType.STRING)
-        val status: GameStatus,
+        var status: GameStatus,
 
         @CreationTimestamp
         val created: LocalDateTime,
 
         @UpdateTimestamp
-        val updated: LocalDateTime,
+        val updated: LocalDateTime? = null,
 
         @ManyToOne
-        val whitePlayer: User?,
-        val whitePing: LocalDateTime?,
+        var whitePlayer: User? = null,
+        var whitePing: LocalDateTime? = null,
 
         @ManyToOne
-        val blackPlayer: User?,
-        val blackPing: LocalDateTime?
+        var blackPlayer: User? = null,
+        var blackPing: LocalDateTime? = null
 )
