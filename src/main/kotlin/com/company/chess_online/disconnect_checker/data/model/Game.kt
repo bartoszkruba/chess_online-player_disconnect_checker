@@ -8,6 +8,13 @@ import javax.persistence.*
 enum class GameStatus { WAITNG_TO_START, STARTED, FINISHED, STOPPED }
 
 @Entity
+data class User(
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        val id: Long
+)
+
+@Entity
 data class Game(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +32,11 @@ data class Game(
         @UpdateTimestamp
         val updated: LocalDateTime,
 
+        @ManyToOne
+        val whitePlayer: User?,
         val whitePing: LocalDateTime?,
+
+        @ManyToOne
+        val blackPlayer: User?,
         val blackPing: LocalDateTime?
 )
