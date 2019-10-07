@@ -17,7 +17,6 @@ val DISCONNECT_QUEUE = "disconnectQueue"
 class Queues {
     @Bean
     fun disconnectQueue() = Queue(DISCONNECT_QUEUE, false)
-
 }
 
 @Component
@@ -29,15 +28,13 @@ class PingCheckSchedule @Autowired constructor(
     fun checkPings() {
         val checkTimestamp = LocalDateTime.now().minusSeconds(30)
 
-        gameRepository.findByStatusNot(GameStatus.FINISHED).forEach { g ->
-            println(g)
-
-            g.blackPing?.let {
-                if (it.isBefore(checkTimestamp)) g.blackPlayer?.let { broadcastDisconnect(it.id, g.id) }
+        gameRepository.findByStatusNotIn(listOf(GameStatus.FINISHED, GameStatus.STOPPED)).forEach { game ->
+            game.blackPing?.let {
+                if (it.isBefore(checkTimestamp)) game.blackPlayer?.let { broadcastDisconnect(it.id, game.id) }
             }
 
-            g.whitePing?.let {
-                if (it.isBefore(checkTimestamp)) g.whitePlayer?.let { broadcastDisconnect(it.id, g.id) }
+            game.whitePing?.let {
+                if (it.isBefore(checkTimestamp)) game.whitePlayer?.let { broadcastDisconnect(it.id, game.id) }
             }
         }
     }

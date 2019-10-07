@@ -26,6 +26,8 @@ internal class PingCheckScheduleTest {
 
         val gameId = 3L
 
+        val statusList = listOf(GameStatus.FINISHED, GameStatus.STOPPED)
+
         fun createTestGameEntity() = Game(
                 id = gameId,
                 status = GameStatus.WAITNG_TO_START,
@@ -56,7 +58,7 @@ internal class PingCheckScheduleTest {
         val gameList = ArrayList<Game>()
         gameList.add(game)
 
-        given(gameRepository.findByStatusNot(GameStatus.FINISHED)).willReturn(gameList)
+        given(gameRepository.findByStatusNotIn(statusList)).willReturn(gameList)
 
         pingCheckSchedule.checkPings()
 
@@ -64,7 +66,76 @@ internal class PingCheckScheduleTest {
         message.put("playerId", whiteId)
         message.put("gameId", gameId)
 
+        verify(gameRepository, times(1)).findByStatusNotIn(statusList)
+        verifyNoMoreInteractions(gameRepository)
+
         verify(rabbitTemplate, times(1)).convertAndSend(DISCONNECT_QUEUE, message)
         verifyNoMoreInteractions(rabbitTemplate)
+    }
+
+    @Test
+    internal fun blackDisconnectedBroadcastTest() {
+        val game = createTestGameEntity()
+        game.blackPlayer = blackPlayer
+        game.blackPing = LocalDateTime.now().minusMinutes(1)
+
+        val gameList = ArrayList<Game>()
+        gameList.add(game)
+
+        given(gameRepository.findByStatusNotIn(statusList)).willReturn(gameList)
+
+        pingCheckSchedule.checkPings()
+
+        val message = HashMap<String, Long>()
+        message.put("playerId", blackId)
+        message.put("gameId", gameId)
+
+        verify(gameRepository, times(1)).findByStatusNotIn(statusList)
+        verifyNoMoreInteractions(gameRepository)
+
+        verify(rabbitTemplate, times(1)).convertAndSend(DISCONNECT_QUEUE, message)
+        verifyNoMoreInteractions(rabbitTemplate)
+    }
+
+    @Test
+    internal fun noBroadcatIfPingNotLateTest() {
+        val game = createTestGameEntity()
+        game.whitePlayer = whitePlayer
+        game.whitePing = LocalDateTime.now()
+
+        game.blackPlayer = blackPlayer
+        game.blackPing = LocalDateTime.now()
+
+        val gameList = ArrayList<Game>()
+        gameList.add(game)
+
+        given(gameRepository.findByStatusNotIn(statusList)).willReturn(gameList)
+
+        pingCheckSchedule.checkPings()
+
+        verify(gameRepository, times(1)).findByStatusNotIn(statusList)
+        verifyNoMoreInteractions(gameRepository)
+
+        Mockito.verifyZeroInteractions(rabbitTemplate)
+    }
+
+    @Test
+    internal fun noBroadcastIfNoPlayerTest() {
+        val game = createTestGameEntity()
+        game.whitePing = LocalDateTime.now().minusMinutes(1)
+
+        game.blackPing = LocalDateTime.now().minusMinutes(1)
+
+        val gameList = ArrayList<Game>()
+        gameList.add(game)
+
+        given(gameRepository.findByStatusNotIn(statusList)).willReturn(gameList)
+
+        pingCheckSchedule.checkPings()
+
+        verify(gameRepository, times(1)).findByStatusNotIn(statusList)
+        verifyNoMoreInteractions(gameRepository)
+
+        Mockito.verifyZeroInteractions(rabbitTemplate)
     }
 }

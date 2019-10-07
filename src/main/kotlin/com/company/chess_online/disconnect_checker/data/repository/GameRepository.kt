@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface GameRepository : JpaRepository<Game, Long> {
-    fun findByStatusNot(status: GameStatus): Iterable<Game>
+    fun findByStatusNotIn(status: List<GameStatus>): Iterable<Game>
 }
