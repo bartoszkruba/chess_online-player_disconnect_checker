@@ -38,6 +38,14 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
 }
 
+tasks.jacocoTestReport {
+    reports {
+        xml.isEnabled = true
+        csv.isEnabled = true
+        html.destination = file("${buildDir}/jacocoHtml")
+    }
+}
+
 tasks.test {
     useJUnitPlatform()
 }
